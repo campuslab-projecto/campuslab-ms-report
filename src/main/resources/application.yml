@@ -1,0 +1,41 @@
+
+server:
+  port: ${PORT:8085}
+
+spring:
+  application:
+    name: campuslab-ms-report
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+
+    consumer:
+      group-id: ${KAFKA_CONSUMER_GROUP:campuslab-report-group}
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      enable-auto-commit: false
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+    listener:
+      auto-startup: ${CAMPUSLAB_KAFKA_ENABLED:false}
+      ack-mode: record
+
+  datasource:
+    url: ${DB_URL:jdbc:h2:file:./reportdb}
+    driver-class-name: org.h2.Driver
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD:}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+campuslab:
+  kafka:
+    topics:
+      booking-events: campuslab.booking.events
+      occupancy-events: campuslab.occupancy.events

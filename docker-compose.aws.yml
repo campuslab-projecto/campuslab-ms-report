@@ -1,0 +1,49 @@
+
+services:
+  ms-report:
+    image: ghcr.io/campuslab-projecto/campuslab-ms-report:ep5
+    container_name: campuslab-ms-report
+
+    restart: unless-stopped
+    init: true
+
+    ports:
+      - "127.0.0.1:8085:8085"
+
+    environment:
+      PORT: "8085"
+
+      KAFKA_BOOTSTRAP_SERVERS: "kafka:19092"
+      KAFKA_CONSUMER_GROUP: "campuslab-report-group"
+
+      CAMPUSLAB_KAFKA_ENABLED: "true"
+      CAMPUSLAB_PROVISION_DLT_TOPICS: "true"
+
+      DB_URL: "jdbc:h2:file:/app/data/reportdb"
+      DB_USERNAME: "sa"
+      DB_PASSWORD: ""
+
+      SPRING_JPA_OPEN_IN_VIEW: "false"
+
+      JAVA_TOOL_OPTIONS: >-
+        -Xms64m
+        -Xmx256m
+        -XX:MaxMetaspaceSize=128m
+        -XX:+UseSerialGC
+
+    mem_limit: 512m
+    mem_reservation: 256m
+
+    volumes:
+      - report-data:/app/data
+
+    networks:
+      - campuslab-network
+
+volumes:
+  report-data:
+
+networks:
+  campuslab-network:
+    external: true
+    name: campuslab-kafka-audit_default

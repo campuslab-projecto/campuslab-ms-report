@@ -36,6 +36,8 @@ spring:
 
 campuslab:
   kafka:
+    provision-dlt-topics: ${CAMPUSLAB_PROVISION_DLT_TOPICS:false}
+
     topics:
       booking-events: campuslab.booking.events
       occupancy-events: campuslab.occupancy.events

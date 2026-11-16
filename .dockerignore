@@ -1,0 +1,12 @@
+
+.git
+.idea
+target
+*.iml
+.env
+.env.*
+reportdb.*
+*.mv.db
+*.trace.db
+data
+logs

@@ -39,5 +39,5 @@ campuslab:
     provision-dlt-topics: ${CAMPUSLAB_PROVISION_DLT_TOPICS:false}
 
     topics:
-      booking-events: campuslab.booking.events
-      occupancy-events: campuslab.occupancy.events
+      booking-events: ${CAMPUSLAB_REPORT_BOOKING_TOPIC:campuslab.booking.events}
+      occupancy-events: ${CAMPUSLAB_REPORT_OCCUPANCY_TOPIC:campuslab.occupancy.events}

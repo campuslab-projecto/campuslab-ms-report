@@ -43,7 +43,7 @@ public interface ReportEventRepository
             SELECT e.resourceId AS resourceId,
                    COUNT(DISTINCT e.bookingId) AS totalReservas
             FROM ReportEvent e
-            WHERE e.sourceTopic = :topic
+            WHERE e.sourceTopic IN :topics
               AND e.resourceId IS NOT NULL
               AND e.occurredAt >= :desde
             GROUP BY e.resourceId
@@ -51,7 +51,7 @@ public interface ReportEventRepository
                      e.resourceId ASC
             """)
     List<ResourceUsage> findTopResources(
-            @Param("topic") String topic,
+            @Param("topics") List<String> topics,
             @Param("desde") LocalDateTime desde
     );
 }

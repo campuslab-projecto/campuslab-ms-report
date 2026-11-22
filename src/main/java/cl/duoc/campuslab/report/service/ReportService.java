@@ -73,7 +73,7 @@ public class ReportService {
                 bookingTopic,
                 evento.eventType(),
                 evento.bookingId(),
-                null,
+                evento.resourceId(),
                 evento.status(),
                 evento.timestamp()
         );
@@ -187,7 +187,7 @@ public class ReportService {
 
         List<ReportEventRepository.ResourceUsage> resultados =
                 repository.findTopResources(
-                        occupancyTopic,
+                        List.of(bookingTopic, occupancyTopic),
                         desde
                 );
 

@@ -41,6 +41,7 @@ class ReportServiceIntegrationTest {
                 "test-booking-001",
                 "BOOKING_CREATED",
                 101L,
+                "LAB-01",
                 "SOLICITADA",
                 fecha
         );
@@ -148,6 +149,50 @@ class ReportServiceIntegrationTest {
                 1L,
                 ((Number) ranking.get(1)
                         .get("totalReservas")).longValue()
+        );
+    }
+
+    // Las reservas deben aparecer aun sin eventos de ocupacion
+    @Test
+    void debeIncluirReservasEnRanking() {
+
+        LocalDateTime fecha = LocalDateTime.now().minusMinutes(5);
+
+        reportService.registrarReserva(
+                new BookingKafkaEvent(
+                        "ranking-booking-ep6-001",
+                        "BOOKING_CREATED",
+                        901L,
+                        "LAB-EP6-TEST-01",
+                        "SOLICITADA",
+                        fecha
+                )
+        );
+
+        // Otro evento de la misma reserva no debe duplicarla
+        reportService.registrarReserva(
+                new BookingKafkaEvent(
+                        "ranking-booking-ep6-002",
+                        "BOOKING_STATUS_CHANGED",
+                        901L,
+                        "LAB-EP6-TEST-01",
+                        "APROBADA",
+                        fecha
+                )
+        );
+
+        List<Map<String, Object>> ranking =
+                reportService.obtenerTopRecursos();
+
+        Map<String, Object> laboratorio = ranking.stream()
+                .filter(item -> "LAB-EP6-TEST-01".equals(
+                        item.get("resourceId")))
+                .findFirst()
+                .orElseThrow();
+
+        assertEquals(
+                1L,
+                ((Number) laboratorio.get("totalReservas")).longValue()
         );
     }
 }

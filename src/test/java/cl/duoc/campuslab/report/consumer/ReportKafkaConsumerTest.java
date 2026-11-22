@@ -58,6 +58,7 @@ class ReportKafkaConsumerTest {
                 argThat(evento ->
                         "booking-test-001".equals(evento.eventId())
                                 && evento.bookingId() == 101L
+                                && evento.resourceId() == null
                                 && "BOOKING_CREATED".equals(
                                 evento.eventType()
                         )
@@ -103,5 +104,31 @@ class ReportKafkaConsumerTest {
         );
 
         verifyNoInteractions(reportService);
+    }
+
+    // Verifica el nuevo formato enviado por Bookings EP6
+    @Test
+    void debeProcesarReservaConResourceId() {
+
+        String mensaje = """
+                {
+                  "eventId": "booking-ep6-001",
+                  "eventType": "BOOKING_CREATED",
+                  "bookingId": 301,
+                  "resourceId": "LAB-EP6-TEST-01",
+                  "status": "SOLICITADA",
+                  "timestamp": "2026-11-22T10:00:00"
+                }
+                """;
+
+        consumer.consumirReserva(mensaje);
+
+        verify(reportService).registrarReserva(
+                argThat(evento ->
+                        "booking-ep6-001".equals(evento.eventId())
+                                && Long.valueOf(301L).equals(evento.bookingId())
+                                && "LAB-EP6-TEST-01".equals(evento.resourceId())
+                )
+        );
     }
 }
